@@ -27,3 +27,30 @@ if err != nil {
 ```
 
 A `nil` error denotes success; a non-nil error denotes failure.
+
+## The Error Interface
+
+Because errors are just interfaces, you can build your own custom types that
+implement the `errror` interface. Here's an example of a `userError` struct that
+inplements the `error` interface:
+
+```go
+type userError struct {
+    name string
+}
+
+func (e userError) Error() string {
+    return fmt.Sprintf("%v has a problem with their account", e.name)
+}
+```
+
+It can then be used as an error:
+
+```go
+// Notice that this still takes the error interface as its return type
+func sendSMS(msg, userName string) error {
+    if !canSendUToUser(userName) {
+        return userError{name: userName}
+    }
+}
+```
